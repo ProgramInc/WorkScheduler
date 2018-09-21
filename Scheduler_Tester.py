@@ -5,7 +5,7 @@ class SchedulerTester(unittest.TestCase):
 
 
     def setUp(self):
-        self.Tester = WorkScheduler8.sunday_protools(1)
+        WorkScheduler8.sunday_protools(1)
 
     def test_sunday_protools_is_correct_employy_amount(self):
         '''This test checks if the function sunday_protools() outputs the correct
