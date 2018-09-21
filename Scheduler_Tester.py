@@ -1,8 +1,8 @@
 import unittest
 import WorkScheduler8
 
-class SchedulerTester(unittest.TestCase):
 
+class SchedulerTester(unittest.TestCase):
 
     def setUp(self):
         WorkScheduler8.sunday_protools(1)
