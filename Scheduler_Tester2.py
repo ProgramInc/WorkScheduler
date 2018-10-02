@@ -10,35 +10,36 @@ class SchedulerTester(unittest.TestCase):
         self.sundayProtools.assign_employee(self.itay)
         self.itay.cooldown = 3
 
+
     def tearDown(self):
         self.sundayProtools.assigned_employees = None
         self.itay.cooldown = 0
 
     def test_that_sundayProtools_assigned_employees_is_not_an_empty_list(self):
-        '''This test will verify that the list sundayProtools.assigned_employees is not empty - This test is meant to pass'''
+        """This test will verify that the list sundayProtools.assigned_employees is not empty - This test is meant to pass"""
         self.assertGreater(len(self.sundayProtools.assigned_employees), 0)
 
 
     def test_sunday_protools_is_correct_employee_amount(self):
-        '''This test checks if the method sundayProtools.assign_employee() outputs the correct
-        amount of employees - This test is meant to pass'''
+        """This test checks if the method sundayProtools.assign_employee() outputs the correct
+        amount of employees - This test is meant to pass"""
         self.assertEqual(len(self.sundayProtools.assigned_employees), 1)
 
 
     def test_sunday_protools_change_expected_result_and_test_again(self):
-        '''This test adds another employee to the list sundayProtools.assigned_employees and then
-        checks if the amount is correct - This test is meant to raise an AssertionError and pass'''
+        """This test adds another employee to the list sundayProtools.assigned_employees and then
+        checks if the amount is correct - This test is meant to raise an AssertionError and pass"""
         self.sundayProtools.assigned_employees.append('Zemer')
         try:
             self.assertEqual(len(self.sundayProtools.assigned_employees), 1)
         except AssertionError:
                 pass
     #
-    # def test_is_employee_qualified_for_protools_shift(self):
-    #     '''This test will check whether or not the employee that was assigned is in the
-    #     list of qualified employees for a protools shift - This test is meant to pass'''
-    #     for name in SundayProtools:
-    #         self.assertIn(name, (WorkScheduler8.proTools))
+    def test_is_employee_qualified_for_protools_shift(self):
+        '''This test will check whether or not the employee that was assigned is in the
+        list of qualified employees for a protools shift - This test is meant to pass'''
+        for employee in self.sundayProtools.assigned_employees:
+            self.assertTrue(employee.protools_authorized)
     #
     # # @unittest.skip('ruins the other tests')
     # def test_is_an_unqualified_employee_qualified_for_protools_shift(self):
