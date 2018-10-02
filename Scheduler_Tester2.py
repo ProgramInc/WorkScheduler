@@ -20,19 +20,19 @@ class SchedulerTester(unittest.TestCase):
 
 
     def test_sunday_protools_is_correct_employee_amount(self):
-        '''This test checks if the function sunday_protools() outputs the correct
+        '''This test checks if the method sundayProtools.assign_employee() outputs the correct
         amount of employees - This test is meant to pass'''
         self.assertEqual(len(self.sundayProtools.assigned_employees), 1)
 
 
     def test_sunday_protools_change_expected_result_and_test_again(self):
-        '''This test adds another employee to the list SundayProtools and then
-        checks if the amount is correct- This test is meant to fail'''
+        '''This test adds another employee to the list sundayProtools.assigned_employees and then
+        checks if the amount is correct - This test is meant to raise an AssertionError and pass'''
         self.sundayProtools.assigned_employees.append('Zemer')
         try:
             self.assertEqual(len(self.sundayProtools.assigned_employees), 1)
-        except:
-            AssertionError('Passed')
+        except AssertionError:
+                pass
     #
     # def test_is_employee_qualified_for_protools_shift(self):
     #     '''This test will check whether or not the employee that was assigned is in the
