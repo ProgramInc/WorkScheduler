@@ -10,17 +10,24 @@ class SchedulerTester(unittest.TestCase):
         self.aShift1 = DaysAndShifts(day_name='aDay1', shift_name='aShift1', assigned_employees=[])
         self.aShift2 = DaysAndShifts(day_name='aDay2', shift_name='aShift2', assigned_employees=[])
         self.aShift1.assign_employee(self.anEmployee1)
-        self.aShift1.assign_employee(self.anEmployee2)
-        self.anEmployee1.cooldown = 3
 
 
     def tearDown(self):
         pass
 
-    def test_that_aShift1_dot_assigned_employees_is_not_an_empty_list(self):
-        """This test will verify that the list sundayProtools.assigned_employees is not empty"""
-        self.assertGreater(len(self.aShift1.assigned_employees), 0)
+    def test_that_all_shifts_have_assigned_employees(self):
+        """This test will verify that for each shift the list assigned_employees is not empty"""
+        for shift in DaysAndShifts.all_shifts:
+            self.assertGreater(len(shift.assigned_employees), 0)
 
+    def test_that_all_shifts_have_assigned_employees_change_outcome_and_test_again(self):
+        """This test removes all employees from aShift1 and then checks that the list is not empty - raising an AssertionError"""
+        self.aShift1.assigned_employees.clear()
+        try:
+            for shift in DaysAndShifts.all_shifts:
+                self.assertGreater(len(shift.assigned_employees), 0)
+        except AssertionError:
+            pass
 
     def test_aShift1_is_correct_employee_amount(self):
         """This test checks if the method shift.assign_employee() outputs the correct
@@ -36,7 +43,7 @@ class SchedulerTester(unittest.TestCase):
         try:
             self.assertEqual(len(self.aShift1.assigned_employees), 1)
         except AssertionError:
-                pass
+            pass
     #
     def test_is_employee_qualified_for_protools_shift(self):
         """This test will check whether or not the employee that was assigned is in the
@@ -47,7 +54,15 @@ class SchedulerTester(unittest.TestCase):
     def test_is_an_employee_listed_twice_for_a_shift(self):
         """This test checks if any employee is listed twice in the same shift"""
         for shift in DaysAndShifts.all_shifts:
+            self.assertEqual(len(shift.assigned_employees), len(list(set(shift.assigned_employees))))
+
+    def test_is_an_employee_listed_twice_change_outcome_and_test_again(self):
+        """This test adds an employee twice to the same shift and then tests again, raising an assertion error"""
+        self.aShift1.assigned_employees.append(self.anEmployee1)
+        try:
             self.assertEqual(len(self.shift.assigned_employees), len(list(set(self.shift.assigned_employees))))
+        except AssertionError:
+            pass
 
     def test_did_any_employee_not_get_any_shifts(self):
         """This test will cycle through all the employees and make sure that each
