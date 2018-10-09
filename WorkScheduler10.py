@@ -18,20 +18,23 @@ class Days:
 
     all_days = []
 
-    def __init__(self, day_name, all_assigned_employees=[], shifts=[]):
+    def __init__(self, day_name, all_assigned_employees=[],all_assigned_names=[], shifts=[]):
         self.day_name = day_name
         self.all_assigned_employees = all_assigned_employees
         self.shifts = shifts
+        self.all_assigned_names = all_assigned_names
         Days.all_days.append(self)
 
     class Shifts:
+
         all_shifts = []
 
-        def __init__(self, day_name, shift_name, required_employees, assigned_employees=[], is_protools_required=False):
+        def __init__(self, day_name, shift_name, required_employees, assigned_employees=[], assigned_names=[], is_protools_required=False):
             self.day_name = day_name
             self.shift_name = shift_name
             self.required_employees = required_employees
             self.assigned_employees = assigned_employees
+            self.assigned_names = assigned_names
             self.is_protools_required = is_protools_required
             Days.Shifts.all_shifts.append(self)
 
@@ -47,29 +50,33 @@ def assign_protools():
             while len(shift.assigned_employees) < shift.required_employees:
                 for employee in Employee.all_employees:
                     if employee.is_protools_authorized is True and employee.shift_count > 0:
-                        shift.assigned_employees.append(employee.name)
+                        shift.assigned_employees.append(employee)
                         employee.shift_count -= 1
                         for day in Days.all_days:
                             if day.day_name == shift.day_name:
-                                day.all_assigned_employees.append(employee.name)
+                                day.all_assigned_employees.append(employee)
+                                employee.scheduled_shifts.append(shift)
                     # else:
                     #     shift.assigned_employees.append('filler')
 
 
-def assign_employees2():
+def assign_employees():
     for day in Days.all_days:
         for shift in day.shifts:
             # print(selected_employee )
             while len(shift.assigned_employees) < shift.required_employees:
                 selected_employee = choose_an_employee()
                 if not selected_employee.shift_count <= 0:
-                    if selected_employee.name in shift.assigned_employees:
+                    if selected_employee in shift.assigned_employees:
                         pass
                     elif selected_employee in day.all_assigned_employees:
                         pass
                     else:
-                        shift.assigned_employees.append(selected_employee.name)
-                        day.all_assigned_employees.append(selected_employee.name)
+                        shift.assigned_employees.append(selected_employee)
+                        day.all_assigned_employees.append(selected_employee)
+                        shift.assigned_names.append(selected_employee)
+                        day.all_assigned_names.append(selected_employee)
+                        selected_employee.scheduled_shifts.append(shift)
                         selected_employee.shift_count -= 1
                 else:
                     pass
@@ -101,6 +108,7 @@ def check_employee_amount():
 def show_schedule():
     for shift in Days.Shifts.all_shifts:
         print(shift.day_name+shift.shift_name+str(shift.assigned_employees))
+
 
 
 
@@ -174,15 +182,15 @@ day7 = Days('Saturday', all_assigned_employees=[], shifts=[day7shift1, day7shift
 
 
 def run():
-    check_shift_amount()
-    check_employee_amount()
+    # check_shift_amount()
+    # check_employee_amount()
     assign_protools()
-    assign_employees2()
+    assign_employees()
     show_schedule()
-    check_remaining_employees()
+    # check_remaining_employees()
 
-
-run()
+if __name__ == '__main__':
+    run()
 
 
 
