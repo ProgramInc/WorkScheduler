@@ -9,9 +9,10 @@ class SchedulerTester(unittest.TestCase):
 
     def setUp(self):
         print('this is the setUp for the test')
-        run()
+        create_universe()
         self.Days = Days
         self.Employee = Employee
+        run()
 
     def tearDown(self):
         print('This Is The End Of This Test')
@@ -19,10 +20,10 @@ class SchedulerTester(unittest.TestCase):
 
     def test_that_all_shifts_that_require_employees_have_assigned_employees(self):
         """This test will verify that each shift has assigned employees"""
-        for self.day in Days.all_days:
-            for self.shift in self.day.shifts:
-                if self.shift.required_employees > 0:
-                    self.assertGreater(len(self.shift.assigned_employees), 0)
+        # for self.day in Days.all_days:
+        for self.shift in self.Days.Shifts.all_shifts:
+            if self.shift.required_employees > 0:
+                self.assertGreater(len(self.shift.assigned_employees), 0)
 
     def test_that_all_shifts_have_assigned_employees_change_outcome_and_test_again(self):
         """This test removes all employees from day1shift1 and then verify that the shift
@@ -37,19 +38,19 @@ class SchedulerTester(unittest.TestCase):
     def test_shift_is_correct_employee_amount(self):
         """This test checks if the function assign_employees() outputs the correct
         amount of employees for one specific shift"""
-        print(self.Days.all_days[0].shifts[0].assigned_employees, 'this is where the problem is')
-        self.assertEqual(len(Days.all_days[0].shifts[0].assigned_employees), 2)
+        # print(self.Days.all_days[0].shifts[0].assigned_employees, 'this is where the problem is')
+        self.assertEqual(len(Days.Shifts.all_shifts[0].assigned_employees), 2)
 
     def test_a_shift_change_expected_result_and_test_again(self):
         """This test adds another employee to the list day1shift1.assigned_employees and then
         checks if the amount is correct - raising an AssertionError"""
-        self.Days.all_days[0].shifts[0].assigned_employees.append('too many')
+        self.Days.Shifts.all_shifts[0].assigned_employees.append('1 too many')
         try:
-            self.assertEqual(len(self.Days.all_days[0].shifts[0].assigned_employees), 2)
+            self.assertEqual(len(self.Days.Shifts.all_shifts[0].assigned_employees), 2)
         except AssertionError:
-            self.Days.all_days[0].shifts[0].assigned_employees.remove('too many')
+            pass
+            # self.Days.all_days[0].shifts[0].assigned_employees.remove('too many')
             # this line should not be here!!
-
 
     def test_is_employee_qualified_for_protools_shift(self):
         """This test will check whether or not the employee that was assigned is in the
@@ -63,16 +64,17 @@ class SchedulerTester(unittest.TestCase):
         """This test checks if any employee is listed twice in the same shift"""
         for shift in self.Days.Shifts.all_shifts:
             self.assertEqual(len(shift.assigned_employees), len(list(set(shift.assigned_employees))))
-    #
+
     def test_is_an_employee_listed_twice_change_outcome_and_test_again(self):
         """This test adds an employee twice to the same shift and then tests again, raising an assertion error"""
         self.Days.all_days[0].shifts[0].assigned_employees.append(self.Days.all_days[0].shifts[0].assigned_employees[0])
         try:
             self.assertEqual(len(self.Days.all_days[0].shifts[0].assigned_employees), len(list(set(self.Days.all_days[0].shifts[0].assigned_employees))))
         except AssertionError:
-            self.Days.all_days[0].shifts[0].assigned_employees.remove(self.Days.all_days[0].shifts[0].assigned_employees[0])
+            pass
+            # self.Days.all_days[0].shifts[0].assigned_employees.remove(self.Days.all_days[0].shifts[0].assigned_employees[0])
             # This line should not be here!!
-    #
+
     def test_did_any_employee_not_get_any_shifts(self):
         """This test will cycle through all the employees and make sure that each
         employee was assigned to at least 1 shift"""
