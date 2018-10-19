@@ -8,8 +8,9 @@ all_shifts = []
 
 class Employee:
 
-    def __init__(self, name, shift_count, cooldown, scheduled_shifts=[], employee_limits=[], is_protools_authorized=False):
+    def __init__(self, name,contract_shift_amount, shift_count, cooldown, scheduled_shifts=[], employee_limits=[], is_protools_authorized=False):
         self.name = name
+        self.contract_shift_amount = contract_shift_amount
         self.shift_count = shift_count
         self.cooldown = cooldown
         self.scheduled_shifts = scheduled_shifts
@@ -42,11 +43,7 @@ class Shifts:
 
 
 def choose_an_employee():
-    employees_for_assignment = all_employees
-    for employee in employees_for_assignment:
-        if employee.name is 'PlaceHolder':
-            employees_for_assignment.remove(employee)
-    selected_employee = random.choice(employees_for_assignment)
+    selected_employee = random.choice(all_employees)
     return selected_employee
 
 
@@ -68,8 +65,6 @@ def assign_protools():
                                     day.all_assigned_employees.append(employee)
                                     day.all_assigned_names.append(employee.name)
                                     employee.scheduled_shifts.append(shift)
-                    # else:
-                    #     shift.assigned_employees.append('filler')
 
 
 def assign_employees():
@@ -78,7 +73,9 @@ def assign_employees():
             # print(selected_employee )
             while len(shift.assigned_employees) < shift.required_employees:
                 selected_employee = choose_an_employee()
-                if not selected_employee.shift_count <= 0:
+                if selected_employee.name is 'PlaceHolder':
+                    pass
+                elif not selected_employee.shift_count <= 0 and shift.shift_code not in selected_employee.employee_limits:
                     if selected_employee in shift.assigned_employees:
                         pass
                     elif selected_employee in day.all_assigned_employees:
@@ -92,6 +89,17 @@ def assign_employees():
                         selected_employee.shift_count -= 1
                 else:
                     pass
+
+def check_wrongful_assignment():
+    for shift in all_shifts:
+        for employee in shift.assigned_employees:
+            if shift.shift_code in employee.employee_limits:
+                shift.assigned_employees.remove(employee)
+                shift.assigned_names.remove(employee.name)
+                shift.assigned_employees.append(all_employees[-1])
+                shift.assigned_names.append(all_employees[-1].name)
+                print('Attention! Wrongful Assignment!!')
+
 
 
 def check_remaining_employees():
@@ -126,11 +134,13 @@ def are_there_enough_employees():
         print('There are enough employees to complete the schedule')
         return True
 
+
 def show_schedule():
     for shift in all_shifts:
         print(shift.day_name+shift.shift_name, shift.assigned_names)
-
+    for shift in all_shifts:
         return str(shift.day_name+shift.shift_name), shift.assigned_names
+
 
 def save_schedule_as_excel():
     wb = Workbook('utf-8')
@@ -140,6 +150,7 @@ def save_schedule_as_excel():
         sheet1.write(row_number, 1, str(shift.assigned_names))
 
     wb.save('test.xls')
+
 
 def run():
     is_schedule_possible = are_there_enough_employees()
