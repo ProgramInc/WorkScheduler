@@ -7,11 +7,12 @@ all_shifts = []
 
 class Employee:
 
-    def __init__(self, name, shift_count, cooldown, scheduled_shifts=[], is_protools_authorized=False):
+    def __init__(self, name, shift_count, cooldown, scheduled_shifts=[], employee_limits=[], is_protools_authorized=False):
         self.name = name
         self.shift_count = shift_count
         self.cooldown = cooldown
         self.scheduled_shifts = scheduled_shifts
+        self.employee_limits = employee_limits
         self.is_protools_authorized = is_protools_authorized
         all_employees.append(self)
 
@@ -28,9 +29,10 @@ class Days:
 
 class Shifts:
 
-    def __init__(self, day_name, shift_name, required_employees, assigned_employees=[], assigned_names=[], is_protools_required=False):
+    def __init__(self, day_name, shift_name, shift_code, required_employees, assigned_employees=[], assigned_names=[], is_protools_required=False):
         self.day_name = day_name
         self.shift_name = shift_name
+        self.shift_code = shift_code
         self.required_employees = required_employees
         self.assigned_employees = assigned_employees
         self.assigned_names = assigned_names
@@ -53,14 +55,18 @@ def assign_protools():
             while len(shift.assigned_employees) < shift.required_employees:
                 for employee in all_employees:
                     if employee.is_protools_authorized is True and employee.shift_count > 0:
-                        shift.assigned_employees.append(employee)
-                        shift.assigned_names.append(employee.name)
-                        employee.shift_count -= 1
-                        for day in all_days:
-                            if day.day_name == shift.day_name:
-                                day.all_assigned_employees.append(employee)
-                                day.all_assigned_names.append(employee.name)
-                                employee.scheduled_shifts.append(shift)
+                        if shift.shift_code in employee.employee_limits:
+                            shift.assigned_employees.append(all_employees[-1])
+                            shift.assigned_names.append(all_employees[-1].name)
+                        else:
+                            shift.assigned_employees.append(employee)
+                            shift.assigned_names.append(employee.name)
+                            employee.shift_count -= 1
+                            for day in all_days:
+                                if day.day_name == shift.day_name:
+                                    day.all_assigned_employees.append(employee)
+                                    day.all_assigned_names.append(employee.name)
+                                    employee.scheduled_shifts.append(shift)
                     # else:
                     #     shift.assigned_employees.append('filler')
 
