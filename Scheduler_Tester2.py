@@ -1,5 +1,5 @@
 import unittest
-from WorkScheduler10 import Days, Employee, Shifts, run, show_schedule, all_shifts, all_days, all_employees
+from WorkScheduler10 import Days, Employee, Shifts, run, show_schedule, all_shifts, all_days, all_employees, are_there_enough_employees
 
 
 def create_universe():
@@ -14,6 +14,8 @@ def create_universe():
     Employee('emp8', 4, 0, [], False)
     Employee('emp9', 4, 0, [], False)
     Employee('emp10', 3, 0, [], False)
+    Employee('PlaceHolder', 5, 0, [], False)
+
 
     day1shift1 = Shifts('Sunday', 'Morning', required_employees=2, assigned_employees=[], assigned_names=[],
                         is_protools_required=False)
@@ -132,7 +134,7 @@ class SchedulerTester(unittest.TestCase):
         self.Shifts = Shifts
         self.Employee = Employee
         self.all_employees, self.all_shifts, self.all_days = create_universe()
-        run()
+
 
     def tearDown(self):
         self.all_employees.clear()
@@ -142,7 +144,7 @@ class SchedulerTester(unittest.TestCase):
 
     def test_that_all_shifts_that_require_employees_have_assigned_employees(self):
         """This test will verify that each shift has assigned employees"""
-        # for self.day in Days.all_days:
+        run()
         for shift in self.all_shifts:
             if shift.required_employees > 0:
                 self.assertGreater(len(shift.assigned_employees), 0)
@@ -150,6 +152,7 @@ class SchedulerTester(unittest.TestCase):
     def test_that_all_shifts_have_assigned_employees_change_outcome_and_test_again(self):
         """This test removes all employees from day1shift1 and then verify that the shift
         has employees agssigned to it - raising an AssertionError"""
+        run()
         self.all_shifts[0].assigned_employees.clear()
         try:
             self.assertGreater(len(self.all_shifts[0].assigned_employees), 0)
@@ -160,12 +163,13 @@ class SchedulerTester(unittest.TestCase):
     def test_shift_is_correct_employee_amount(self):
         """This test checks if the function assign_employees() outputs the correct
         amount of employees for one specific shift"""
-        # print(self.Days.all_days[0].shifts[0].assigned_employees, 'this is where the problem is')
+        run()
         self.assertEqual(len(all_shifts[0].assigned_employees), 2)
 
     def test_a_shift_change_expected_result_and_test_again(self):
         """This test adds another employee to the list day1shift1.assigned_employees and then
         checks if the amount is correct - raising an AssertionError"""
+        run()
         self.all_shifts[0].assigned_employees.append('1 too many')
         try:
             self.assertEqual(len(self.all_shifts[0].assigned_employees), 2)
@@ -175,6 +179,7 @@ class SchedulerTester(unittest.TestCase):
     def test_is_employee_qualified_for_protools_shift(self):
         """This test will check whether or not the employee that was assigned is in the
         list of qualified employees for a protools shift """
+        run()
         for shift in self.all_shifts:
             if shift.shift_name == 'Protools':
                 for employee in shift.assigned_employees:
@@ -182,11 +187,13 @@ class SchedulerTester(unittest.TestCase):
 
     def test_is_an_employee_listed_twice_for_a_shift(self):
         """This test checks if any employee is listed twice in the same shift"""
+        run()
         for shift in self.all_shifts:
             self.assertEqual(len(shift.assigned_employees), len(list(set(shift.assigned_employees))))
 
     def test_is_an_employee_listed_twice_change_outcome_and_test_again(self):
         """This test adds an employee twice to the same shift and then tests again, raising an assertion error"""
+        run()
         self.all_shifts[0].assigned_names.append(self.all_shifts[0].assigned_names[0])
         self.all_shifts[0].assigned_employees.append(self.all_shifts[0].assigned_employees[0])
         show_schedule()
@@ -200,13 +207,21 @@ class SchedulerTester(unittest.TestCase):
     def test_did_any_employee_not_get_any_shifts(self):
         """This test will cycle through all the employees and make sure that each
         employee was assigned to at least 1 shift"""
+        run()
         for employee in self.all_employees:
             if employee.shift_count > 0:
                 self.assertGreater(len(employee.scheduled_shifts), 0)
-    #
-    # def test_did_all_employees_get_exact_shift_number_according_to_their_contract(self):
-    #     """This test will make sure that each employee is listed to the exact
-    #     number of shifts according to their contract"""
-    #     for employee in all_employees:
-    #         self.assertEqual(len(self.employee.scheduled_shifts), self.employee.contract_shift_count)
-    #
+
+    def test_with_no_employees(self):
+        """tests how the code behaves when there are not enough employees"""
+        self.all_employees.clear()
+        run()
+        for shift in all_shifts:
+            self.assertEqual(shift.assigned_employees, [])
+            self.assertEqual(shift.assigned_names, [])
+
+    def test_is_schedule_possible(self):
+        """Checks if the function are_there_enough_employees is outputting correctly"""
+        self.all_employees.clear()
+        check = are_there_enough_employees()
+        self.assertEqual(check, False)
