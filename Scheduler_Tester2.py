@@ -1,6 +1,6 @@
 import unittest
-from WorkScheduler10 import Days, Employee, Shifts, run, show_schedule, all_shifts, all_days, all_employees, are_there_enough_employees
-
+from WorkScheduler10 import Days, Employee, Shifts, run, show_schedule, all_shifts, all_days, all_employees,are_there_enough_employees, save_schedule_as_excel
+import xlrd
 
 def create_universe():
 
@@ -231,6 +231,21 @@ class SchedulerTester(unittest.TestCase):
         run()
         self.assertNotEqual(str(all_shifts[1].assigned_names), str(['emp1']))
         self.assertEqual(str(all_shifts[1].assigned_names), str(['PlaceHolder']))
+
+    def test_save_to_excel(self):
+        """How do i test for this??"""
+        run()
+        save_schedule_as_excel()
+        self.workbook = xlrd.open_workbook('test.xls')
+        self.worksheet = self.workbook.sheet_by_name('Sheet 1')
+        self.cell_to_check1 = self.worksheet.cell_value(0, 0)
+        self.cell_to_check2 = self.worksheet.cell_value(2,1)
+        self.cell_to_check3 = self.worksheet.cell_value(7, 1)
+        self.assertEqual(str(self.cell_to_check1), str('SundayMorning'))
+        self.assertEqual(str(self.cell_to_check2), str('[]'))
+        self.assertEqual(str(self.cell_to_check3), str(['emp1']))
+
+
 
 
 
