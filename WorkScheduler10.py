@@ -39,7 +39,11 @@ class Shifts:
 
 
 def choose_an_employee():
-    selected_employee = random.choice(all_employees)
+    employees_for_assignment = all_employees
+    for employee in employees_for_assignment:
+        if employee.name is 'PlaceHolder':
+            employees_for_assignment.remove(employee)
+    selected_employee = random.choice(employees_for_assignment)
     return selected_employee
 
 
@@ -98,12 +102,22 @@ def check_shift_amount():
         total.append(day_shifts_total)
         print(day.day_name, 'Required Employees', day_shifts_total)
     print('Total Required Employees', sum(total))
-
+    return sum(total)
 
 def check_employee_amount():
     total_employee_amount = sum(employee.shift_count for employee in all_employees)
     print('Total Available Employees', total_employee_amount)
+    return total_employee_amount
 
+def are_there_enough_employees():
+    total_employee_amount = check_employee_amount()
+    total_shift_amount = check_shift_amount()
+    if (total_shift_amount) - total_employee_amount > 0:
+        print('Not Enough Employees! Please Hire More!!')
+        return False
+    else:
+        print('There are enough employees to complete the schedule')
+        return True
 
 def show_schedule():
     for shift in all_shifts:
@@ -111,15 +125,17 @@ def show_schedule():
 
 
 def run():
-    # check_shift_amount()
-    # check_employee_amount()
-    assign_protools()
-    assign_employees()
-    show_schedule()
-    # check_remaining_employees()
+    is_schedule_possible = are_there_enough_employees()
+    if is_schedule_possible is True:
+        # check_shift_amount()
+        # check_employee_amount()
+        assign_protools()
+        assign_employees()
+        show_schedule()
+        # check_remaining_employees()
 
 
 if __name__ == '__main__':
-    # create_universe()
+
     run()
 
