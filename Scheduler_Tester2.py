@@ -236,14 +236,29 @@ class SchedulerTester(unittest.TestCase):
         """How do i test for this??"""
         run()
         save_schedule_as_excel()
+
         self.workbook = xlrd.open_workbook('test.xls')
         self.worksheet = self.workbook.sheet_by_name('Sheet 1')
+
         self.cell_to_check1 = self.worksheet.cell_value(0, 0)
         self.cell_to_check2 = self.worksheet.cell_value(2,1)
         self.cell_to_check3 = self.worksheet.cell_value(7, 1)
+
         self.assertEqual(str(self.cell_to_check1), str('SundayMorning'))
         self.assertEqual(str(self.cell_to_check2), str('[]'))
         self.assertEqual(str(self.cell_to_check3), str(['emp1']))
+
+    def test_save_to_excel_with_employee_limit(self):
+        self.all_employees[0].employee_limits.append('Sunday Morning')
+
+        run()
+        save_schedule_as_excel()
+
+        self.workbook = xlrd.open_workbook('test.xls')
+        self.worksheet = self.workbook.sheet_by_name('Sheet 1')
+        self.cell_to_check1 = self.worksheet.cell_value(1, 1)
+
+        self.assertEqual(self.cell_to_check1, str(['PlaceHolder']))
 
 
 
