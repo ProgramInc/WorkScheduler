@@ -139,8 +139,7 @@ def create_universe():
 
 class SchedulerTester(unittest.TestCase):
 
-    def \
-            setUp(self):
+    def setUp(self):
         print('this is the setUp for the test')
         self.Days = Days
         self.Shifts = Shifts
