@@ -1,4 +1,5 @@
 import random
+from xlwt import Workbook
 
 all_employees = []
 all_days = []
@@ -127,8 +128,18 @@ def are_there_enough_employees():
 
 def show_schedule():
     for shift in all_shifts:
-            print(shift.day_name+shift.shift_name, shift.assigned_names)
+        print(shift.day_name+shift.shift_name, shift.assigned_names)
 
+        return str(shift.day_name+shift.shift_name), shift.assigned_names
+
+def save_schedule_as_excel():
+    wb = Workbook('utf-8')
+    sheet1 = wb.add_sheet('Sheet 1')
+    for row_number, shift in enumerate(all_shifts):
+        sheet1.write(row_number, 0, str(shift.day_name+shift.shift_name))
+        sheet1.write(row_number, 1, str(shift.assigned_names))
+
+    wb.save('test.xls')
 
 def run():
     is_schedule_possible = are_there_enough_employees()
