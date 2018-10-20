@@ -1,32 +1,25 @@
 import unittest
-from WorkScheduler10 import Days, Employee, Shifts, run, show_schedule, all_shifts, all_days, all_employees,are_there_enough_employees, save_schedule_as_excel, check_wrongful_assignment
+from WorkScheduler10 import Days, Employee, Shifts, run, show_schedule, all_shifts, all_days, all_employees,\
+    are_there_enough_employees, save_schedule_as_excel, check_wrongful_assignment, excluded_names_from_regular_shifts,\
+    excluded_employees_from_regular_shifts
 import xlrd
 
 
 def create_universe():
 
-    Employee(name='emp1', contract_shift_amount=5, shift_count=5, cooldown=0, scheduled_shifts=[], employee_limits=[],
-             is_protools_authorized=True)
-    Employee(name='emp2', contract_shift_amount=5, shift_count=5, cooldown=0, scheduled_shifts=[], employee_limits=[],
-             is_protools_authorized=False)
-    Employee(name='emp3', contract_shift_amount=5, shift_count=5, cooldown=0, scheduled_shifts=[], employee_limits=[],
-             is_protools_authorized=False)
-    Employee(name='emp4', contract_shift_amount=5, shift_count=5, cooldown=0, scheduled_shifts=[], employee_limits=[],
-             is_protools_authorized=False)
-    Employee(name='emp5', contract_shift_amount=4, shift_count=4, cooldown=0, scheduled_shifts=[], employee_limits=[],
-             is_protools_authorized=False)
-    Employee(name='emp6', contract_shift_amount=4, shift_count=4, cooldown=0, scheduled_shifts=[], employee_limits=[],
-             is_protools_authorized=False)
-    Employee(name='emp7', contract_shift_amount=4, shift_count=4, cooldown=0, scheduled_shifts=[], employee_limits=[],
-             is_protools_authorized=False)
-    Employee(name='emp8', contract_shift_amount=4, shift_count=4, cooldown=0, scheduled_shifts=[], employee_limits=[],
-             is_protools_authorized=False)
-    Employee(name='emp9', contract_shift_amount=4, shift_count=4, cooldown=0, scheduled_shifts=[], employee_limits=[],
-             is_protools_authorized=False)
-    Employee(name='emp10', contract_shift_amount=3, shift_count=3, cooldown=0, scheduled_shifts=[], employee_limits=[],
-             is_protools_authorized=False)
-    Employee(name='PlaceHolder', contract_shift_amount=5, shift_count=5, cooldown=0, scheduled_shifts=[], employee_limits=[],
-             is_protools_authorized=False)
+    Employee(name='emp1', contract_shift_amount=5, shift_count=5,scheduled_shifts_names=[], cooldown=0, scheduled_shifts=[], employee_limits=[], is_protools_authorized=True)
+    Employee(name='emp2', contract_shift_amount=5, shift_count=5,scheduled_shifts_names=[], cooldown=0, scheduled_shifts=[], employee_limits=[], is_protools_authorized=False)
+    Employee(name='emp3', contract_shift_amount=5, shift_count=5,scheduled_shifts_names=[], cooldown=0, scheduled_shifts=[], employee_limits=[], is_protools_authorized=False)
+    Employee(name='emp4', contract_shift_amount=5, shift_count=5,scheduled_shifts_names=[], cooldown=0, scheduled_shifts=[], employee_limits=[], is_protools_authorized=False)
+    Employee(name='emp5', contract_shift_amount=4, shift_count=4,scheduled_shifts_names=[], cooldown=0, scheduled_shifts=[], employee_limits=[], is_protools_authorized=False)
+    Employee(name='emp6', contract_shift_amount=4, shift_count=4,scheduled_shifts_names=[], cooldown=0, scheduled_shifts=[], employee_limits=[], is_protools_authorized=False)
+    Employee(name='emp7', contract_shift_amount=4, shift_count=4,scheduled_shifts_names=[], cooldown=0, scheduled_shifts=[], employee_limits=[], is_protools_authorized=False)
+    Employee(name='emp8', contract_shift_amount=4, shift_count=4,scheduled_shifts_names=[], cooldown=0, scheduled_shifts=[], employee_limits=[], is_protools_authorized=False)
+    Employee(name='emp9', contract_shift_amount=4, shift_count=4,scheduled_shifts_names=[], cooldown=0, scheduled_shifts=[], employee_limits=[], is_protools_authorized=False)
+    Employee(name='emp10', contract_shift_amount=3, shift_count=3,scheduled_shifts_names=[], cooldown=0, scheduled_shifts=[], employee_limits=[], is_protools_authorized=False)
+    Employee(name='Supervisor1', contract_shift_amount=5, shift_count=5,scheduled_shifts_names=[], cooldown=0, scheduled_shifts=[], employee_limits=[], is_protools_authorized=False)
+    Employee(name='Supervisor2', contract_shift_amount=5, shift_count=5,scheduled_shifts_names=[], cooldown=0, scheduled_shifts=[], employee_limits=[], is_protools_authorized=False)
+    Employee(name='PlaceHolder', contract_shift_amount=5, shift_count=5,scheduled_shifts_names=[], cooldown=0, scheduled_shifts=[], employee_limits=[], is_protools_authorized=False)
 
     day1shift1 = Shifts('Sunday', 'Morning', shift_code='Sunday Morning', required_employees=2,
                         assigned_employees=[], assigned_names=[], is_protools_required=False)
@@ -39,6 +32,10 @@ def create_universe():
     day1shift5 = Shifts('Sunday', 'Evening', shift_code='Sunday Evening', required_employees=2,
                         assigned_employees=[], assigned_names=[], is_protools_required=False)
     day1shift6 = Shifts('Sunday', 'Night', shift_code='Sunday Night', required_employees=0,
+                        assigned_employees=[], assigned_names=[], is_protools_required=False)
+    day1shift7 = Shifts('Sunday', 'Super Morning', shift_code='Sunday Morning', required_employees=1,
+                        assigned_employees=[], assigned_names=[], is_protools_required=False)
+    day1shift8 = Shifts('Sunday', 'Super Evening', shift_code='Sunday Morning', required_employees=1,
                         assigned_employees=[], assigned_names=[], is_protools_required=False)
 
     day2shift1 = Shifts('Monday', 'Morning', shift_code='Monday Morning', required_employees=2,
@@ -53,6 +50,10 @@ def create_universe():
                         assigned_employees=[], assigned_names=[], is_protools_required=False)
     day2shift6 = Shifts('Monday', 'Night', shift_code='Monday Night', required_employees=0,
                         assigned_employees=[], assigned_names=[], is_protools_required=False)
+    day2shift7 = Shifts('Monday', 'Super Morning', shift_code='Monday Morning', required_employees=1,
+                        assigned_employees=[], assigned_names=[], is_protools_required=False)
+    day2shift8 = Shifts('Monday', 'Super Evening', shift_code='Monday Morning', required_employees=1,
+                        assigned_employees=[], assigned_names=[], is_protools_required=False)
 
     day3shift1 = Shifts('Tuesday', 'Morning', shift_code='Tuesday Morning', required_employees=2,
                         assigned_employees=[], assigned_names=[], is_protools_required=False)
@@ -65,6 +66,10 @@ def create_universe():
     day3shift5 = Shifts('Tuesday', 'Evening', shift_code='Tuesday Evening', required_employees=2,
                         assigned_employees=[], assigned_names=[], is_protools_required=False)
     day3shift6 = Shifts('Tuesday', 'Night', shift_code='Tuesday Night', required_employees=0,
+                        assigned_employees=[], assigned_names=[], is_protools_required=False)
+    day3shift7 = Shifts('Tuesday', 'Super Morning', shift_code='Tuesday Morning', required_employees=1,
+                        assigned_employees=[], assigned_names=[], is_protools_required=False)
+    day3shift8 = Shifts('Tuesday', 'Super Evening', shift_code='Tuesday Morning', required_employees=1,
                         assigned_employees=[], assigned_names=[], is_protools_required=False)
 
     day4shift1 = Shifts('Wednesday', 'Morning', shift_code='Wednesday Morning', required_employees=2,
@@ -79,6 +84,10 @@ def create_universe():
                         assigned_employees=[], assigned_names=[], is_protools_required=False)
     day4shift6 = Shifts('Wednesday', 'Night', shift_code='Wednesday Night', required_employees=0,
                         assigned_employees=[], assigned_names=[], is_protools_required=False)
+    day4shift7 = Shifts('Wednesday', 'Super Morning', shift_code='Wednesday Morning', required_employees=1,
+                        assigned_employees=[], assigned_names=[], is_protools_required=False)
+    day4shift8 = Shifts('Wednesday', 'Super Evening', shift_code='Wednesday Morning', required_employees=1,
+                        assigned_employees=[], assigned_names=[], is_protools_required=False)
 
     day5shift1 = Shifts('Thursday', 'Morning', shift_code='Thursday Morning', required_employees=2,
                         assigned_employees=[], assigned_names=[], is_protools_required=False)
@@ -91,6 +100,10 @@ def create_universe():
     day5shift5 = Shifts('Thursday', 'Evening', shift_code='Thursday Evening', required_employees=2,
                         assigned_employees=[], assigned_names=[], is_protools_required=False)
     day5shift6 = Shifts('Thursday', 'Night', shift_code='Thursday Night', required_employees=0,
+                        assigned_employees=[], assigned_names=[], is_protools_required=False)
+    day5shift7 = Shifts('Thursday', 'Super Morning', shift_code='Thursday Morning', required_employees=1,
+                        assigned_employees=[], assigned_names=[], is_protools_required=False)
+    day5shift8 = Shifts('Thursday', 'Super Evening', shift_code='Thursday Morning', required_employees=1,
                         assigned_employees=[], assigned_names=[], is_protools_required=False)
 
     day6shift1 = Shifts('Friday', 'Morning', shift_code='Friday Morning', required_employees=2,
@@ -105,6 +118,10 @@ def create_universe():
                         assigned_employees=[], assigned_names=[], is_protools_required=False)
     day6shift6 = Shifts('Friday', 'Night', shift_code='Friday Night', required_employees=0,
                         assigned_employees=[], assigned_names=[], is_protools_required=False)
+    day6shift7 = Shifts('Friday', 'Super Morning', shift_code='Friday Morning', required_employees=0,
+                        assigned_employees=[], assigned_names=[], is_protools_required=False)
+    day6shift8 = Shifts('Friday', 'Super Evening', shift_code='Friday Morning', required_employees=0,
+                        assigned_employees=[], assigned_names=[], is_protools_required=False)
 
     day7shift1 = Shifts('Saturday', 'Morning', shift_code='Saturday Morning', required_employees=2,
                         assigned_employees=[], assigned_names=[], is_protools_required=False)
@@ -118,21 +135,25 @@ def create_universe():
                         assigned_employees=[], assigned_names=[], is_protools_required=False)
     day7shift6 = Shifts('Saturday', 'Night', shift_code='Saturday Night', required_employees=0,
                         assigned_employees=[], assigned_names=[], is_protools_required=False)
+    day7shift7 = Shifts('Saturday', 'Super Morning', shift_code='Saturday Morning', required_employees=0,
+                        assigned_employees=[], assigned_names=[], is_protools_required=False)
+    day7shift8 = Shifts('Saturday', 'Super Evening', shift_code='Saturday Morning', required_employees=0,
+                        assigned_employees=[], assigned_names=[], is_protools_required=False)
 
     Days('Sunday', all_assigned_employees=[], all_assigned_names=[],
-         shifts=[day1shift1, day1shift2, day1shift3, day1shift4, day1shift5, day1shift6])
+         shifts=[day1shift1, day1shift2, day1shift3, day1shift4, day1shift5, day1shift6, day1shift7, day1shift8])
     Days('Monday', all_assigned_employees=[], all_assigned_names=[],
-         shifts=[day2shift1, day2shift2, day2shift3, day2shift4, day2shift5, day2shift6])
+         shifts=[day2shift1, day2shift2, day2shift3, day2shift4, day2shift5, day2shift6, day2shift7, day2shift8])
     Days('Tuesday', all_assigned_employees=[], all_assigned_names=[],
-         shifts=[day3shift1, day3shift2, day3shift3, day3shift4, day3shift5, day3shift6])
+         shifts=[day3shift1, day3shift2, day3shift3, day3shift4, day3shift5, day3shift6, day3shift7, day3shift8])
     Days('Wednesday', all_assigned_employees=[], all_assigned_names=[],
-         shifts=[day4shift1, day4shift2, day4shift3, day4shift4, day4shift5, day4shift6])
+         shifts=[day4shift1, day4shift2, day4shift3, day4shift4, day4shift5, day4shift6, day4shift7, day4shift8])
     Days('Thursday', all_assigned_employees=[], all_assigned_names=[],
-         shifts=[day5shift1, day5shift2, day5shift3, day5shift4, day5shift5, day5shift6])
+         shifts=[day5shift1, day5shift2, day5shift3, day5shift4, day5shift5, day5shift6, day5shift7, day5shift8])
     Days('Friday', all_assigned_employees=[], all_assigned_names=[],
-         shifts=[day6shift1, day6shift2, day6shift3, day6shift4, day6shift5, day6shift6])
+         shifts=[day6shift1, day6shift2, day6shift3, day6shift4, day6shift5, day6shift6, day6shift7, day6shift8])
     Days('Saturday', all_assigned_employees=[], all_assigned_names=[],
-         shifts=[day7shift1, day7shift2, day7shift3, day7shift4, day7shift5, day7shift6])
+         shifts=[day7shift1, day7shift2, day7shift3, day7shift4, day7shift5, day7shift6, day7shift7, day7shift8])
 
     return all_employees, all_shifts, all_days
 
@@ -145,11 +166,21 @@ class SchedulerTester(unittest.TestCase):
         self.Shifts = Shifts
         self.Employee = Employee
         self.all_employees, self.all_shifts, self.all_days = create_universe()
+        self.excluded_names_from_regular_shifts = excluded_names_from_regular_shifts
+        self.excluded_employees_from_regular_shifts = excluded_employees_from_regular_shifts
+        self.excluded_names_from_regular_shifts.extend(['Supervisor1', 'Supervisor2', 'PlaceHolder'])
+        for employee in self.all_employees:
+            if employee.name in self.excluded_names_from_regular_shifts:
+                self.excluded_employees_from_regular_shifts.append(employee)
+        print(len(self.excluded_employees_from_regular_shifts))
+        print(len(self.excluded_names_from_regular_shifts))
 
     def tearDown(self):
         self.all_employees.clear()
         self.all_shifts.clear()
         self.all_days.clear()
+        self.excluded_names_from_regular_shifts.clear()
+        self.excluded_employees_from_regular_shifts.clear()
         print('This Is The End Of This Test')
 
     def test_that_all_shifts_that_require_employees_have_assigned_employees(self):
@@ -157,6 +188,7 @@ class SchedulerTester(unittest.TestCase):
         run()
         for shift in self.all_shifts:
             if shift.required_employees > 0:
+                # print(shift.day_name, shift.shift_name, shift.required_employees, len(shift.assigned_employees), shift.assigned_names)
                 self.assertGreater(len(shift.assigned_employees), 0)
 
     def test_that_all_shifts_have_assigned_employees_change_outcome_and_test_again(self):
@@ -193,7 +225,7 @@ class SchedulerTester(unittest.TestCase):
         for shift in self.all_shifts:
             if shift.shift_name == 'Protools':
                 for employee in shift.assigned_employees:
-                    if employee.name != "PlaceHolder":
+                    if employee.name != 'PlaceHolder':
                         self.assertTrue(employee.is_protools_authorized)
 
     def test_is_an_employee_listed_twice_for_a_shift(self):
@@ -220,8 +252,8 @@ class SchedulerTester(unittest.TestCase):
         employee was assigned to at least 1 shift"""
         run()
         for employee in self.all_employees:
-            if employee.contract_shift_amount > 0:
-                if employee.name != 'PlaceHolder':
+            if employee.name != 'PlaceHolder':
+                if employee.contract_shift_amount > 0:
                     self.assertGreater(len(employee.scheduled_shifts), 0)
 
     def test_with_no_employees(self):
@@ -257,7 +289,7 @@ class SchedulerTester(unittest.TestCase):
 
         self.cell_to_check1 = self.worksheet.cell_value(0, 0)
         self.cell_to_check2 = self.worksheet.cell_value(2, 1)
-        self.cell_to_check3 = self.worksheet.cell_value(7, 1)
+        self.cell_to_check3 = self.worksheet.cell_value(9, 1)
 
         self.assertEqual(str(self.cell_to_check1), str('SundayMorning'))
         self.assertEqual(str(self.cell_to_check2), str('[]'))
