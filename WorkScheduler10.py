@@ -52,12 +52,14 @@ def choose_an_employee():
             break
     return selected_employee
 
+
 def choose_a_supervisor():
     while True:
         selected_supervisor = random.choice(excluded_employees_from_regular_shifts)
         if selected_supervisor.name != 'PlaceHolder':
             break
     return selected_supervisor
+
 
 def assign_protools():
     for shift in all_shifts:
@@ -69,6 +71,11 @@ def assign_protools():
                             if shift.shift_code in employee.employee_limits:
                                 shift.assigned_employees.append(all_employees[-1])
                                 shift.assigned_names.append(all_employees[-1].name)
+                                all_employees[-1].scheduled_shifts.append(shift)
+                                all_employees[-1].scheduled_shifts_names.extend([shift.day_name, shift.shift_name])
+                                all_employees[-1].shift_count -= 1
+                                # day.all_assigned_employees.append(all_employees[-1])
+                                # day.all_assigned_names.append(all_employees[-1])
                             else:
                                 shift.assigned_employees.append(employee)
                                 shift.assigned_names.append(employee.name)
@@ -84,7 +91,6 @@ def assign_protools():
 def assign_supervisor():
     for day in all_days:
         for shift in day.shifts:
-            print(shift.required_employees, shift.shift_name)
             if shift.shift_name == 'Super Morning' or shift.shift_name == 'Super Evening':
                 while len(shift.assigned_employees) < shift.required_employees:
                     selected_employee = choose_a_supervisor()
@@ -103,12 +109,10 @@ def assign_supervisor():
                             selected_employee.shift_count -= 1
 
 
-
 def assign_employees():
     for day in all_days:
         for shift in day.shifts:
             if shift.shift_name != 'Protools':
-                print(shift.required_employees, shift.shift_name)
                 while len(shift.assigned_employees) < shift.required_employees:
                     selected_employee = choose_an_employee()
                     if selected_employee in excluded_employees_from_regular_shifts:
@@ -129,6 +133,7 @@ def assign_employees():
                     else:
                         pass
 
+
 def check_wrongful_assignment():
     for shift in all_shifts:
         for employee in shift.assigned_employees:
@@ -138,7 +143,6 @@ def check_wrongful_assignment():
                 shift.assigned_employees.append(all_employees[-1])
                 shift.assigned_names.append(all_employees[-1].name)
                 print('Attention! Wrongful Assignment!!')
-
 
 
 def check_remaining_employees():
@@ -158,15 +162,17 @@ def check_shift_amount():
     print('Total Required Employees', sum(total))
     return sum(total)
 
+
 def check_employee_amount():
     total_employee_amount = sum(employee.shift_count for employee in all_employees)
     print('Total Available Employees', total_employee_amount)
     return total_employee_amount
 
+
 def are_there_enough_employees():
     total_employee_amount = check_employee_amount()
     total_shift_amount = check_shift_amount()
-    if (total_shift_amount) - total_employee_amount > 0:
+    if total_shift_amount - total_employee_amount > 0:
         print('Not Enough Employees! Please Hire More!!')
         return False
     else:
@@ -192,14 +198,20 @@ def save_schedule_as_excel():
         sheet1.write(row_number1, 3, str(employee.name))
         sheet1.write(row_number1, 4, str(employee.scheduled_shifts_names))
 
+    sheet1.col(0).width = 4000
+    sheet1.col(1).width = 4000
+    sheet1.col(2).width = 4000
+    sheet1.col(3).width = 4000
+    sheet1.col(4).width = 4000
+
     wb.save('test.xls')
 
 
 def run():
     is_schedule_possible = are_there_enough_employees()
     if is_schedule_possible is True:
-        check_shift_amount()
-        check_employee_amount()
+        # check_shift_amount()
+        # check_employee_amount()
         assign_protools()
         assign_supervisor()
         assign_employees()
@@ -210,4 +222,3 @@ def run():
 if __name__ == '__main__':
 
     run()
-
