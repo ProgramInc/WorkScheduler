@@ -7,19 +7,19 @@ import xlrd
 
 def create_universe():
 
-    Employee(name='emp1', contract_shift_amount=5, shift_count=5,scheduled_shifts_names=[], cooldown=0, scheduled_shifts=[], employee_limits=[], is_protools_authorized=True)
-    Employee(name='emp2', contract_shift_amount=5, shift_count=5,scheduled_shifts_names=[], cooldown=0, scheduled_shifts=[], employee_limits=[], is_protools_authorized=False)
-    Employee(name='emp3', contract_shift_amount=5, shift_count=5,scheduled_shifts_names=[], cooldown=0, scheduled_shifts=[], employee_limits=[], is_protools_authorized=False)
-    Employee(name='emp4', contract_shift_amount=5, shift_count=5,scheduled_shifts_names=[], cooldown=0, scheduled_shifts=[], employee_limits=[], is_protools_authorized=False)
-    Employee(name='emp5', contract_shift_amount=4, shift_count=4,scheduled_shifts_names=[], cooldown=0, scheduled_shifts=[], employee_limits=[], is_protools_authorized=False)
-    Employee(name='emp6', contract_shift_amount=4, shift_count=4,scheduled_shifts_names=[], cooldown=0, scheduled_shifts=[], employee_limits=[], is_protools_authorized=False)
-    Employee(name='emp7', contract_shift_amount=4, shift_count=4,scheduled_shifts_names=[], cooldown=0, scheduled_shifts=[], employee_limits=[], is_protools_authorized=False)
-    Employee(name='emp8', contract_shift_amount=4, shift_count=4,scheduled_shifts_names=[], cooldown=0, scheduled_shifts=[], employee_limits=[], is_protools_authorized=False)
-    Employee(name='emp9', contract_shift_amount=4, shift_count=4,scheduled_shifts_names=[], cooldown=0, scheduled_shifts=[], employee_limits=[], is_protools_authorized=False)
-    Employee(name='emp10', contract_shift_amount=3, shift_count=3,scheduled_shifts_names=[], cooldown=0, scheduled_shifts=[], employee_limits=[], is_protools_authorized=False)
-    Employee(name='Supervisor1', contract_shift_amount=5, shift_count=5,scheduled_shifts_names=[], cooldown=0, scheduled_shifts=[], employee_limits=[], is_protools_authorized=False)
-    Employee(name='Supervisor2', contract_shift_amount=5, shift_count=5,scheduled_shifts_names=[], cooldown=0, scheduled_shifts=[], employee_limits=[], is_protools_authorized=False)
-    Employee(name='PlaceHolder', contract_shift_amount=5, shift_count=5,scheduled_shifts_names=[], cooldown=0, scheduled_shifts=[], employee_limits=[], is_protools_authorized=False)
+    Employee(name='emp1', contract_shift_amount=5, shift_count=5, scheduled_shifts_names=[], cooldown=0, scheduled_shifts=[], employee_limits=[], is_protools_authorized=True)
+    Employee(name='emp2', contract_shift_amount=5, shift_count=5, scheduled_shifts_names=[], cooldown=0, scheduled_shifts=[], employee_limits=[], is_protools_authorized=False)
+    Employee(name='emp3', contract_shift_amount=5, shift_count=5, scheduled_shifts_names=[], cooldown=0, scheduled_shifts=[], employee_limits=[], is_protools_authorized=False)
+    Employee(name='emp4', contract_shift_amount=5, shift_count=5, scheduled_shifts_names=[], cooldown=0, scheduled_shifts=[], employee_limits=[], is_protools_authorized=False)
+    Employee(name='emp5', contract_shift_amount=4, shift_count=4, scheduled_shifts_names=[], cooldown=0, scheduled_shifts=[], employee_limits=[], is_protools_authorized=False)
+    Employee(name='emp6', contract_shift_amount=4, shift_count=4, scheduled_shifts_names=[], cooldown=0, scheduled_shifts=[], employee_limits=[], is_protools_authorized=False)
+    Employee(name='emp7', contract_shift_amount=4, shift_count=4, scheduled_shifts_names=[], cooldown=0, scheduled_shifts=[], employee_limits=[], is_protools_authorized=False)
+    Employee(name='emp8', contract_shift_amount=4, shift_count=4, scheduled_shifts_names=[], cooldown=0, scheduled_shifts=[], employee_limits=[], is_protools_authorized=False)
+    Employee(name='emp9', contract_shift_amount=4, shift_count=4, scheduled_shifts_names=[], cooldown=0, scheduled_shifts=[], employee_limits=[], is_protools_authorized=False)
+    Employee(name='emp10', contract_shift_amount=3, shift_count=3, scheduled_shifts_names=[], cooldown=0, scheduled_shifts=[], employee_limits=[], is_protools_authorized=False)
+    Employee(name='Supervisor1', contract_shift_amount=5, shift_count=5, scheduled_shifts_names=[], cooldown=0, scheduled_shifts=[], employee_limits=[], is_protools_authorized=False)
+    Employee(name='Supervisor2', contract_shift_amount=5, shift_count=5, scheduled_shifts_names=[], cooldown=0, scheduled_shifts=[], employee_limits=[], is_protools_authorized=False)
+    Employee(name='PlaceHolder', contract_shift_amount=5, shift_count=5, scheduled_shifts_names=[], cooldown=0, scheduled_shifts=[], employee_limits=[], is_protools_authorized=False)
 
     day1shift1 = Shifts('Sunday', 'Morning', shift_code='Sunday Morning', required_employees=2,
                         assigned_employees=[], assigned_names=[], is_protools_required=False)
@@ -172,8 +172,6 @@ class SchedulerTester(unittest.TestCase):
         for employee in self.all_employees:
             if employee.name in self.excluded_names_from_regular_shifts:
                 self.excluded_employees_from_regular_shifts.append(employee)
-        print(len(self.excluded_employees_from_regular_shifts))
-        print(len(self.excluded_names_from_regular_shifts))
 
     def tearDown(self):
         self.all_employees.clear()
@@ -186,6 +184,7 @@ class SchedulerTester(unittest.TestCase):
     def test_that_all_shifts_that_require_employees_have_assigned_employees(self):
         """This test will verify that each shift has assigned employees"""
         run()
+
         for shift in self.all_shifts:
             if shift.required_employees > 0:
                 # print(shift.day_name, shift.shift_name, shift.required_employees, len(shift.assigned_employees), shift.assigned_names)
@@ -195,7 +194,9 @@ class SchedulerTester(unittest.TestCase):
         """This test removes all employees from day1shift1 and then verify that the shift
         has employees agssigned to it - raising an AssertionError"""
         run()
+
         self.all_shifts[0].assigned_employees.clear()
+
         try:
             self.assertGreater(len(self.all_shifts[0].assigned_employees), 0)
         except AssertionError:
@@ -206,13 +207,16 @@ class SchedulerTester(unittest.TestCase):
         """This test checks if the function assign_employees() outputs the correct
         amount of employees for one specific shift"""
         run()
+
         self.assertEqual(len(all_shifts[0].assigned_employees), 2)
 
     def test_a_shift_change_expected_result_and_test_again(self):
         """This test adds another employee to the list day1shift1.assigned_employees and then
         checks if the amount is correct - raising an AssertionError"""
         run()
+
         self.all_shifts[0].assigned_employees.append('1 too many')
+
         try:
             self.assertEqual(len(self.all_shifts[0].assigned_employees), 2)
         except AssertionError:
@@ -222,6 +226,7 @@ class SchedulerTester(unittest.TestCase):
         """This test will check whether or not the employee that was assigned is in the
         list of qualified employees for a protools shift """
         run()
+
         for shift in self.all_shifts:
             if shift.shift_name == 'Protools':
                 for employee in shift.assigned_employees:
@@ -231,6 +236,7 @@ class SchedulerTester(unittest.TestCase):
     def test_is_an_employee_listed_twice_for_a_shift(self):
         """This test checks if any employee is listed twice in the same shift"""
         run()
+
         for shift in self.all_shifts:
             self.assertEqual(len(shift.assigned_employees), len(list(set(shift.assigned_employees))))
 
@@ -240,6 +246,7 @@ class SchedulerTester(unittest.TestCase):
         self.all_shifts[0].assigned_names.append(self.all_shifts[0].assigned_names[0])
         self.all_shifts[0].assigned_employees.append(self.all_shifts[0].assigned_employees[0])
         show_schedule()
+
         try:
             self.assertEqual(len(self.all_shifts[0].assigned_names), len(list(set(self.all_shifts[0].assigned_names))))
             self.assertEqual(len(self.all_shifts[0].assigned_employees), len(list(set(self.all_shifts[0].assigned_employees))))
@@ -251,6 +258,7 @@ class SchedulerTester(unittest.TestCase):
         """This test will cycle through all the employees and make sure that each
         employee was assigned to at least 1 shift"""
         run()
+
         for employee in self.all_employees:
             if employee.name != 'PlaceHolder':
                 if employee.contract_shift_amount > 0:
@@ -259,7 +267,9 @@ class SchedulerTester(unittest.TestCase):
     def test_with_no_employees(self):
         """tests how the code behaves when there are not enough employees"""
         self.all_employees.clear()
+
         run()
+
         for shift in all_shifts:
             self.assertEqual(shift.assigned_employees, [])
             self.assertEqual(shift.assigned_names, [])
@@ -267,12 +277,16 @@ class SchedulerTester(unittest.TestCase):
     def test_is_schedule_possible(self):
         """Checks if the function are_there_enough_employees is outputting correctly"""
         self.all_employees.clear()
+
         check = are_there_enough_employees()
+
         self.assertEqual(check, False)
 
     def test_protools_limits_are_working(self):
         self.all_employees[0].employee_limits.append('Sunday Morning')
+
         run()
+
         self.assertNotEqual(str(all_shifts[1].assigned_names), str(['emp1']))
         self.assertEqual(str(all_shifts[1].assigned_names), str(['PlaceHolder']))
 
@@ -308,10 +322,44 @@ class SchedulerTester(unittest.TestCase):
         self.assertEqual(self.cell_to_check1, str(['PlaceHolder']))
 
     def test_check_wrongful_assignment(self):
+        """This test will assign an employee against his limits and then check if the
+        function check_wrongful_assignment caught it"""
+
         self.all_employees[6].employee_limits.append('Sunday Morning')
         self.all_shifts[0].assigned_employees.append(self.all_employees[6])
         self.all_shifts[0].assigned_names.append(self.all_employees[6].name)
+
         run()
         check_wrongful_assignment()
+
         self.assertIn('PlaceHolder', self.all_shifts[0].assigned_names)
 
+    def test_assign_supervisor(self):
+        """This test will make sure that the employee assigned to a supervisor shift is indeed a supervisor"""
+
+        self.supervisors = [['Supervisor1'], ['Supervisor2']]
+        run()
+
+        for shift in self.all_shifts:
+            if shift.shift_name == 'Super Morning' or shift.shift_name == 'Super Evening':
+                if shift.required_employees > 0:
+                    self.assertIn(shift.assigned_names, self.supervisors)
+
+    def test_assign_supervisor_change_outcome_test_again(self):
+        """This test will make sure that the employee assigned to a supervisor shift is indeed a supervisor"""
+        self.supervisors = [['Supervisor1'], ['Supervisor2']]
+
+        run()
+        self.all_shifts[6].assigned_employees.clear()
+        self.all_shifts[6].assigned_names.clear()
+        self.all_shifts[6].assigned_employees.append(all_employees[0])
+        self.all_shifts[6].assigned_names.append(all_employees[0].name)
+        show_schedule()
+
+        for shift in self.all_shifts:
+            if shift.shift_name == 'Super Morning' or shift.shift_name == 'Super Evening':
+                if shift.required_employees > 0:
+                    try:
+                        self.assertIn(shift.assigned_names, self.supervisors)
+                    except AssertionError:
+                        pass
