@@ -1,5 +1,5 @@
 import random
-from xlwt import Workbook
+# from xlwt import Workbook
 
 all_employees = []
 all_days = []
@@ -10,15 +10,16 @@ excluded_employees_from_regular_shifts = []
 
 class Employee:
 
-    def __init__(self, name,contract_shift_amount, shift_count, cooldown, scheduled_shifts=[],scheduled_shifts_names=[], employee_limits=[], is_protools_authorized=False):
-        self.name = name
+    def __init__(self, idemployee, first_name, last_name, contract_shift_amount, shift_count=0, scheduled_shifts=[],scheduled_shifts_names=[], employee_limits=[], authorization=0):
+        self.idemployee = idemployee
+        self.first_name = first_name
+        self.last_name = last_name
         self.contract_shift_amount = contract_shift_amount
         self.shift_count = shift_count
-        self.cooldown = cooldown
         self.scheduled_shifts = scheduled_shifts
         self.scheduled_shifts_names = scheduled_shifts_names
         self.employee_limits = employee_limits
-        self.is_protools_authorized = is_protools_authorized
+        self.authorization = authorization
         all_employees.append(self)
 
 
